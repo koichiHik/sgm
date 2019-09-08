@@ -18,6 +18,8 @@
 cmake_minimum_required(VERSION 2.4)
 project(sgm)
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
 set(
     CUDA_NVCC_FLAGS
     ${CUDA_NVCC_FLAGS};
@@ -25,8 +27,27 @@ set(
     -gencode=arch=compute_61,code=sm_61
     )
 
-cuda_add_executable(
-    sgm
-    main.cu median_filter.cu hamming_cost.cu disparity_method.cu debug.cu costs.cu)
+#cuda_add_executable(
+#    sgm
+#    main.cu median_filter.cu hamming_cost.cu disparity_method.cu debug.cu costs.cu)
+#target_link_libraries( sgm ${OpenCV_LIBS} )
 
-target_link_libraries( sgm ${OpenCV_LIBS} )
+cuda_add_library(
+    sgm_cuda
+    median_filter.cu
+    hamming_cost.cu
+    disparity_method.cu
+    debug.cu
+    costs.cu
+    sgm_cuda.cu
+)
+
+#target_include_directories(
+#    sgm_cuda PRIVATE
+#    ${CUDA_INCLUDE_DIRS}
+#)
+
+target_link_libraries(
+    sgm_cuda
+    ${OpenCV_LIBS}
+)
